@@ -1,0 +1,70 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch ArrayReviewQuestion",
+            "request": "launch",
+            "mainClass": "ArrayReviewQuestion",
+            "projectName": "ICS4U_a2428aab"
+        },
+        {
+            "type": "java",
+            "name": "Launch ArrayReviewQueston",
+            "request": "launch",
+            "mainClass": "ArrayReviewQueston",
+            "projectName": "ICS4U_a2428aab"
+        },
+        {
+            "type": "java",
+            "name": "Launch ArrayReviewQuesiton",
+            "request": "launch",
+            "mainClass": "ArrayReviewQuesiton",
+            "projectName": "ICS4U_a2428aab"
+        },
+        {
+            "type": "java",
+            "name": "Launch Review1",
+            "request": "launch",
+            "mainClass": "Review1",
+            "projectName": "ICS4U_a2428aab"
+        },
+        {
+            "type": "java",
+            "name": "Launch ConsecutiveSum",
+            "request": "launch",
+            "mainClass": "ConsecutiveSum",
+            "projectName": "ICS4U_a2428aab"
+        },
+        {
+            "type": "java",
+            "name": "Launch DoughnutCompany",
+            "request": "launch",
+            "mainClass": "DoughnutCompany",
+            "projectName": "ICS4U_a2428aab"
+        },
+        {
+            "type": "java",
+            "name": "Launch AidenHW1P1",
+            "request": "launch",
+            "mainClass": "AidenHW1P1",
+            "projectName": "ICS4U_a2428aab"
+        },
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Launch test",
+            "request": "launch",
+            "mainClass": "test",
+            "projectName": "ICS4U_a2428aab"
+        }
+    ]
+}
