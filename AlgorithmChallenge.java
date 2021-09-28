@@ -8,6 +8,7 @@ import java.util.*;
 
 public class AlgorithmChallenge {
     public static void main(String[] args) {
+        
         /*
          * Steps for reverse number algorithm:
          *   promt the user for a number and store it in int variable num
@@ -18,6 +19,7 @@ public class AlgorithmChallenge {
          *     divide num by 10
          *   print out reNum
          */
+
         Scanner in = new Scanner(System.in);
         //prompt user for a nuymber to reverse
         System.out.println("Please enter a number you want to reverse: ");
