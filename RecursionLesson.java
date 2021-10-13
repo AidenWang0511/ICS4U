@@ -11,7 +11,7 @@ public class RecursionLesson {
     public static int factorial(int num){
         if(num == 0 || num == 1){ //exit condition & base case
             return 1;
-        }else{
+        }else{ //recursive step
             return (num * factorial(num-1));
         }
     }
