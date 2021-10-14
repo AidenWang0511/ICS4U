@@ -6,6 +6,7 @@ public class RecursionLesson {
         System.out.println("Enter a number you want to factorial: ");
         int num = in.nextInt();
         System.out.println("The factorial of " + num + " is: " + factorial(num));
+        ArrayList<Double> db = new ArrayList<Double>();
     }
 
     public static int factorial(int num){
