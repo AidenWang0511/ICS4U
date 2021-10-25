@@ -17,8 +17,6 @@ public class Level3aArrayExercises {
         randomOrder(false);
         threeRandomOrder();
 
-
-
     }
 
     /**
