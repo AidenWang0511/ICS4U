@@ -10,6 +10,7 @@ public class Level2bArrayExercises {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         int check = -1; //int variable for users selection and check for quiting
+
         do{
             //printing out the menu
             System.out.println("Please select the method you want to run: ");
