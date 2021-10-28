@@ -2,25 +2,22 @@ import java.util.*;
 
 public class test{
     public static void main(String[] args) {
-        String a = "ABCD";
-        String b = a.substring(4);
-        System.out.println(b);
-        
+        mystery(5);
     }
 
     /**
-     * Euclid's algorithm for determining the greatest common divisor
-     * Method name: gcd
-     * @param m - an integer to be used
-     * @param n - an integer to be used
-     * @return the greatest common divisor of m and n
+     * Mystery recursive method
+     * method name: mystery
+     * @param n - an integer
+     * @return void
      */
-    public static int gcd(int m, int n) {
-        // base case
-        if (m == 0) {
-            return n;
+    public static void mystery(int n){
+        if(n == 0 || n == 1){
+            return;
         }
-        return gcd(n % m, m);
+        mystery(n-2);
+        System.out.println(n);
+        mystery(n-1);
     }
 
 }
