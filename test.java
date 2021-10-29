@@ -3,6 +3,8 @@ import java.util.*;
 public class test{
     public static void main(String[] args) {
         mystery(5);
+        char a = 'A' + 1;
+        System.out.println("The occurence of letter " + a + " is 0");
     }
 
     /**
