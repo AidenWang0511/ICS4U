@@ -1,0 +1,6 @@
+Generating the maze:
+Finding and marking all paths:
+    Recursive method:
+        use a for loop to loop through the 4 directions the mouse can travel
+            
+How to load maze from file:

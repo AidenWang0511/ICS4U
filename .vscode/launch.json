@@ -6,6 +6,34 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch RecursionExercises2",
+            "request": "launch",
+            "mainClass": "RecursionExercises2",
+            "projectName": "ICS4U_2ed4ca76"
+        },
+        {
+            "type": "java",
+            "name": "Launch RecursionExercises1",
+            "request": "launch",
+            "mainClass": "RecursionExercises1",
+            "projectName": "ICS4U_2ed4ca76"
+        },
+        {
+            "type": "java",
+            "name": "Launch Level4b2DArrayExercises",
+            "request": "launch",
+            "mainClass": "Level4b2DArrayExercises",
+            "projectName": "ICS4U_2ed4ca76"
+        },
+        {
+            "type": "java",
+            "name": "Launch Level4a2DArrayExercises",
+            "request": "launch",
+            "mainClass": "Level4a2DArrayExercises",
+            "projectName": "ICS4U_2ed4ca76"
+        },
+        {
+            "type": "java",
             "name": "Launch ButtonExercise",
             "request": "launch",
             "mainClass": "ButtonExercise",

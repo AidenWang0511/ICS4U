@@ -18,9 +18,10 @@ public class ButtonExercise extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         //update label when button is pressed
         String command = e.getActionCommand();
-        int butNum = Integer.parseInt(command);
+        int butNum = Integer.parseInt(command) - 1;
         int row = butNum / 10;
         int col = butNum % 10;
+        butNum++;
         if(!buttonPressed[row][col]) {
             label.setText("Button " + butNum + " was pressed");
             buttonPressed[row][col] = true;
