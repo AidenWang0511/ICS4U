@@ -2,24 +2,27 @@ import java.util.*;
 
 public class test{
     public static void main(String[] args) {
-        mystery(5);
-        char a = 'A' + 1;
-        System.out.println("The occurence of letter " + a + " is 0");
+
+        int[] arr = arrGen();
+
+        boolean a = false;
+        for(int i=0; i<4; i++){
+            a = a||true;
+        }
+
+        System.out.println(a);
+        
     }
 
-    /**
-     * Mystery recursive method
-     * method name: mystery
-     * @param n - an integer
-     * @return void
-     */
-    public static void mystery(int n){
-        if(n == 0 || n == 1){
-            return;
+    public static int[] arrGen(){
+        Scanner in = new Scanner(System.in);
+        System.out.println("Enter the size of the array: ");
+        int size = in.nextInt();
+        int[] arr = new int[size];
+        for(int i = 0; i < arr.length; i++){
+            arr[i] = (int)(Math.random() * 100);
         }
-        mystery(n-2);
-        System.out.println(n);
-        mystery(n-1);
+        return arr;
     }
 
 }
