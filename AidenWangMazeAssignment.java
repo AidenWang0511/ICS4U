@@ -26,7 +26,7 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
     public static int panCounter = 0;
     JLabel[] fillLab = new JLabel[10];
     public static int labCounter = 0;
-    JLabel warnLab = new JLabel("The dimension must be within the range 2x3 or 3x2 to 20x20, unqualified number wil turn red!");
+    JLabel warnLab = new JLabel("The dimension must be bigger than 2x3 or 3x2 and less than 20x20, unqualified number will turn ORANGE!");
     JPanel userInterface = new JPanel();
     JLabel rowPrompt = new JLabel("Enter the number of rows of the maze");
     JLabel colPrompt = new JLabel("Enter the number of columns of the maze");
@@ -37,26 +37,18 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
     JPanel mazePanel = new JPanel();
     JLabel[][] mazeLabel = new JLabel[20][20];
 
-    public void actionPerformed(ActionEvent event) {
+    public void actionPerformed(ActionEvent event){
         String command = event.getActionCommand();
         if(command.equals("Generate")){
-            if(rowInput.getText().equals("")){
-                rowInput.setBackground(Color.RED);
-
-            }
-            if(colInput.getText().equals("")){
-                colInput.setBackground(Color.RED);
-            }else{
-                int tempRow = Integer.parseInt(rowInput.getText());
-            }
+            dimensionPrompt();
         }
     }
     
 
     public AidenWangMazeAssignment() {
         fillInLabels();
-        setTitle("Button Exercise");
-        setSize(1000, 800);
+        setTitle("An A Maze ing Program");
+        setSize(1920, 1080);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(2,0));
 
@@ -82,6 +74,42 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
         setVisible(true);
 
     }
+
+    /**
+     * This method is called from within the constructor to assist the process of prompting dimensions.
+     * method name: dimensionPrompt
+     * @param: none
+     * @return: void - procedure method
+     */
+    public void dimensionPrompt() throws NumberFormatException{
+        boolean isValid = false;;
+        if(rowInput.getText().equals("")){
+            rowInput.setBackground(Color.ORANGE);
+        }
+        if(colInput.getText().equals("")){
+            colInput.setBackground(Color.ORANGE);
+        }
+        try {
+            int row = Integer.parseInt(rowInput.getText());
+            int col = Integer.parseInt(colInput.getText());
+            boolean sizeCheck = (row>=2 && col>=3) || (row>=3 && col>=2); 
+            if(!(row<=20) || !(col<=20) || !sizeCheck){
+                throw new NumberFormatException();
+            }else{
+                rowInput.setBackground(Color.WHITE);
+                colInput.setBackground(Color.WHITE);
+                isValid = true;
+            }
+        }catch(NumberFormatException e1) {
+            rowInput.setBackground(Color.ORANGE);//try catch so the whole section will turn orange if it's invalid input
+            colInput.setBackground(Color.ORANGE);
+        }
+        if(isValid){
+            maxC = Integer.parseInt(colInput.getText());
+            maxR = Integer.parseInt(rowInput.getText());
+        }
+    }
+
 
     /**
      * prompt user for maze dimensions and randomly generate the maze as required
