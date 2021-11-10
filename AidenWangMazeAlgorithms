@@ -1,6 +1,9 @@
-Generating the maze:
+Randomly generating the maze:
+    prompt user for size of the maze (rows and columns)
+    create a char 2d array based on the dimensions
+    Fill the borders of the array with 'B' or characters 
+    
+
+
 Finding and marking all paths:
-    Recursive method:
-        use a for loop to loop through the 4 directions the mouse can travel
-            
 How to load maze from file:
