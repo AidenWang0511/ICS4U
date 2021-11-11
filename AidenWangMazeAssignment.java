@@ -69,7 +69,6 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
         colInput.setPreferredSize(new Dimension(30, 30));
         rowPrompt.setFont(new Font("Comic Sans", Font.BOLD, 18));
         colPrompt.setFont(new Font("Comic Sans", Font.BOLD, 18));
-        warnLab.setFont(new Font("Comic Sans", Font.BOLD, 18));
         userInterface.add(rowPrompt);
         userInterface.add(rowInput);
         userInterface.add(colPrompt);
@@ -252,7 +251,7 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
                 mazeLabel[i][j] = new JLabel("" + maze[i][j]);
                 mazeLabel[i][j].setHorizontalAlignment(JLabel.CENTER);
                 mazeLabel[i][j].setVerticalAlignment(JLabel.CENTER);
-                mazeLabel[i][j].setFont(new Font("Comic Sans", Font.BOLD, 30));
+                mazeLabel[i][j].setFont(new Font("Comic Sans", Font.BOLD, 20));
                 mazeLabel[i][j].setOpaque(true);
                 if(maze[i][j] == barrierChar){
                     mazeLabel[i][j].setBackground(new Color(102, 51, 0));
