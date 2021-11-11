@@ -8,6 +8,7 @@ Description: Maze generator and solver
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.Flow;
 
@@ -23,32 +24,59 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
     public static char exitChar = 'X';
     public static char openChar = 'O';
 
+    public static JPanel uiPan = new JPanel();
+    public static JLabel uiLabel = new JLabel("<html>Welcome to my a Maze ing game! Please Select an option to generate maze:<br/> <br/>Maximize screen for better user experience</html>");
+    public static JButton btnUserGen = new JButton("Randomly Generate");
+    public static JButton btnFileGen = new JButton("Generate Maze From File");
     
     public static JLabel warnLab = new JLabel("The dimension must be bigger than 2x3 or 3x2 and less than 20x20, unqualified number will turn ORANGE!");
-    public static JPanel userInterface = new JPanel();
+    public static JPanel userGen = new JPanel();
     public static JLabel rowPrompt = new JLabel("Enter the number of rows of the maze");
     public static JLabel colPrompt = new JLabel("Enter the number of columns of the maze");
     public static JTextField rowInput = new JTextField(10);
     public static JTextField colInput = new JTextField(10);
     public static JButton btnGenerate = new JButton("Generate");
 
+    public static JPanel fileGen = new JPanel();
+    public static JLabel fileLab = new JLabel("Enter the file name of the maze:");
+    public static JTextField fileInput = new JTextField(10);
+    public static JButton btnFileGenerate = new JButton("Continue");
+    public static String mazeFileName = new String();
 
     public static JPanel mazePanel = new JPanel();
     public static JLabel[][] mazeLabel = new JLabel[20][20];
     public static JPanel mazeUIPanel = new JPanel();
     public static JButton btnSolve = new JButton("Solve Maze");
-    public static JButton btnRegen = new JButton("Generate Again");
+    public static JButton btnHome = new JButton("Return Home");
 
     public void actionPerformed(ActionEvent event){
         String command = event.getActionCommand();
-        if(command.equals("Generate")){
+        if(command.equals("Randomly Generate")){
+            uiPan.setVisible(false);
+            userGen.setVisible(true);
+        }else if(command.equals("Generate Maze From File")){
+            uiPan.setVisible(false);
+            fileGen.setVisible(true);
+            
+        }else if(command.equals("Generate")){
             boolean isValid = false;
             isValid = dimensionPrompt();
             if(isValid){ //only generate the maze if the dimension is valid
                 mazeGenGUI();
             }
-        }else if(command.equals("Generate Again")){
-            regenMaze();
+        }else if(command.equals("Continue")){
+            boolean isValid = false;
+            isValid = filePrompt();
+            if(isValid){ //only generate the maze if the dimension is valid
+                fileGen.setVisible(false);
+                try{
+                    fileGenGUI();
+                }catch(Exception e){
+                    fileLab.setText("File not found! Please try again!!!");
+                }
+            }
+        }else if(command.equals("Return Home")){
+            returnHome();
         }
     }
     
@@ -57,30 +85,64 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
         setTitle("An A Maze ing Program");
         setSize(1920, 1080);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
 
         btnGenerate.addActionListener(this);
         btnSolve.addActionListener(this);
-        btnRegen.addActionListener(this);
+        btnHome.addActionListener(this);
+        btnUserGen.addActionListener(this);
+        btnFileGen.addActionListener(this);
+        btnFileGenerate.addActionListener(this);
 
+        uiPan.setLayout(new GridLayout(3,0));
+        uiLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        uiLabel.setVerticalAlignment(SwingConstants.CENTER);
+        uiLabel.setOpaque(true);
+        uiLabel.setBackground(Color.lightGray);
+        uiLabel.setFont(new Font("Comic Sans", Font.BOLD, 24));
+        btnFileGen.setFont(new Font("Comic Sans", Font.BOLD, 24));
+        btnUserGen.setFont(new Font("Comic Sans", Font.BOLD, 24));
+        uiPan.add(uiLabel);
+        uiPan.add(btnUserGen);
+        uiPan.add(btnFileGen);
 
-        userInterface.setLayout(new GridLayout(5,2));
+        userGen.setLayout(new GridLayout(5,2));
         rowInput.setPreferredSize(new Dimension(30, 30));
         colInput.setPreferredSize(new Dimension(30, 30));
         rowPrompt.setFont(new Font("Comic Sans", Font.BOLD, 18));
         colPrompt.setFont(new Font("Comic Sans", Font.BOLD, 18));
-        userInterface.add(rowPrompt);
-        userInterface.add(rowInput);
-        userInterface.add(colPrompt);
-        userInterface.add(colInput);
-        userInterface.add(warnLab);
-        userInterface.add(btnGenerate);
+        userGen.add(rowPrompt);
+        userGen.add(rowInput);
+        userGen.add(colPrompt);
+        userGen.add(colInput);
+        userGen.add(warnLab);
+        userGen.add(btnGenerate);
 
+        fileGen.setLayout(new GridLayout(5,0));
+        fileLab.setFont(new Font("Comic Sans", Font.BOLD, 20));
+        fileLab.setHorizontalAlignment(SwingConstants.CENTER);
+        fileInput.setPreferredSize(new Dimension(30, 30));
+        btnFileGenerate.setFont(new Font("Comic Sans", Font.BOLD, 20));
+        fileGen.add(fileLab);
+        fileGen.add(fileInput);
+        fileGen.add(btnFileGenerate);
 
-        add(userInterface);
+        mazeUIPanel.setLayout(new GridLayout(1,2));
+        btnHome.setFont(new Font("Comic Sans", Font.BOLD, 20));
+        btnSolve.setFont(new Font("Comic Sans", Font.BOLD, 20));
+        mazeUIPanel.add(btnHome);
+        mazeUIPanel.add(btnSolve);
+
+        add(uiPan);
+        add(userGen);
+        add(fileGen);
         add(mazePanel);
         add(mazeUIPanel);
-        userInterface.setVisible(true);
+
+        uiPan.setVisible(true);
+        userGen.setVisible(false);
+        fileGen.setVisible(false);
         mazePanel.setVisible(false);
         mazeUIPanel.setVisible(false);
 
@@ -95,13 +157,7 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
      * @return: boolean - returns if the input is valid or not
      */
     public static boolean dimensionPrompt() throws NumberFormatException{
-        boolean isValid = false;;
-        if(rowInput.getText().equals("")){
-            rowInput.setBackground(Color.ORANGE);
-        }
-        if(colInput.getText().equals("")){
-            colInput.setBackground(Color.ORANGE);
-        }
+        boolean isValid = false;
         try {
             int row = Integer.parseInt(rowInput.getText());
             int col = Integer.parseInt(colInput.getText());
@@ -167,7 +223,21 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
 
         //randmoly generate 1-4 inclusive for the side the exit is on
         int randNum = rand.nextInt(4) + 1; //1&2 is on the horizontal side, 3&4 is on the vertical side
-        if(randNum <= 2){
+        if(maxR == 2){
+            int randCol = rand.nextInt(maxC-2) + 1;//generate a random column number
+            if(randNum == 1){
+                maze[0][randCol] = exitChar;//set the exit on the horizontal side
+            }else{
+                maze[maxR-1][randCol] = exitChar;//set the exit on the horizontal side
+            }
+        }else if(maxC == 2){
+            int randRow = rand.nextInt(maxR-2) + 1;//generate a random row number
+            if(randNum == 3){
+                maze[randRow][0] = exitChar;//set the exit on the vertical side
+            }else{
+                maze[randRow][maxC-1] = exitChar;//set the exit on the vertical side
+            }
+        }else if(randNum <= 2){
             int randCol = rand.nextInt(maxC-2) + 1;//generate a random column number
             if(randNum == 1){
                 maze[0][randCol] = exitChar;//set the exit on the horizontal side
@@ -243,7 +313,7 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
      * @return void - procedure method
      */
     public static void mazeGenGUI(){
-        userInterface.setVisible(false); //hide the userInterface panel
+        userGen.setVisible(false); //hide the userInterface panel
         mazeGen(); //call mazeGen method to generate maze
         mazePanel.setLayout(new GridLayout(maxR, maxC));
         for(int i = 0; i < maxR; i++){
@@ -270,26 +340,97 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
         }
         mazePanel.setVisible(true);
         mazeUIPanel.setLayout(new GridLayout(1,2));
-        mazeUIPanel.add(btnRegen);
+        mazeUIPanel.add(btnHome);
         mazeUIPanel.add(btnSolve);
         mazeUIPanel.setVisible(true);
     }
 
     /**
      * Regenerate the maze
-     * method name: regenMaze
+     * method name: returnHome
      * @return void - procedure method
      */
-    public static void regenMaze(){
+    public static void returnHome(){
         mazePanel.setVisible(false);
         mazeUIPanel.setVisible(false);
-        userInterface.setVisible(true);
+        uiPan.setVisible(true);
         for(int i = 0; i < maxR; i++){
             for(int j = 0; j < maxC; j++){
                 mazePanel.remove(mazeLabel[i][j]);
                 maze[i][j] = ' ';
             }
         }
+    }
+
+    /**
+     * prompt file check if file is valid
+     * method name: filePrompt
+     * @return boolean - if the file is valid or not
+     */
+    public static boolean filePrompt(){
+        mazeFileName = fileInput.getText();
+        File file = new File(mazeFileName);
+        if(!file.isFile()){
+            fileLab.setOpaque(true);
+            fileLab.setBackground(Color.RED);
+            fileLab.setText("Invalid File!!! Please try again!");
+            return false;
+        }else{
+            fileLab.setOpaque(true);
+            fileLab.setBackground(Color.white);
+            fileLab.setText("Enter the file name of the maze:");
+            return true;
+        }
+    }
+
+    /**
+     * read the file and store the data into the maze array
+     * method name: fileGenGUI
+     * @return void - procedure method
+     */
+    public static void fileGenGUI() throws Exception{
+        File mazeFile = new File(mazeFileName);
+        Scanner in = new Scanner(mazeFile);
+        maxR = in.nextInt();
+        maxC = in.nextInt();
+        barrierChar = in.next().charAt(0);
+        openChar = in.next().charAt(0);
+        startChar = in.next().charAt(0);
+        exitChar = in.next().charAt(0);
+        in.nextLine();//clear scanner
+        for(int i = 0; i < maxR; i++){
+            String line = in.nextLine();
+            for(int j = 0; j < maxC; j++){
+                maze[i][j] = line.charAt(j);
+            }
+        }
+        in.close();
+        mazePanel.setLayout(new GridLayout(maxR, maxC));
+        for(int i = 0; i < maxR; i++){
+            for(int j = 0; j < maxC; j++){
+                mazeLabel[i][j] = new JLabel("" + maze[i][j]);
+                mazeLabel[i][j].setHorizontalAlignment(JLabel.CENTER);
+                mazeLabel[i][j].setVerticalAlignment(JLabel.CENTER);
+                mazeLabel[i][j].setFont(new Font("Comic Sans", Font.BOLD, 20));
+                mazeLabel[i][j].setOpaque(true);
+                if(maze[i][j] == barrierChar){
+                    mazeLabel[i][j].setBackground(new Color(102, 51, 0));
+                }
+                else if(maze[i][j] == startChar){
+                    mazeLabel[i][j].setBackground(Color.GRAY);
+                }
+                else if(maze[i][j] == exitChar){
+                    mazeLabel[i][j].setBackground(Color.GREEN);
+                }
+                else if(maze[i][j] == openChar){
+                    mazeLabel[i][j].setBackground(Color.YELLOW);
+                }
+                mazePanel.add(mazeLabel[i][j]);
+            }
+        }
+        mazePanel.setVisible(true);
+        mazeUIPanel.setVisible(true);
+
     }
 
     public static void main(String[] args) {
