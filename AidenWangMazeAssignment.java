@@ -200,6 +200,19 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
                 continue;
             }else{ //if it's not a corner, set the starting position to startChar
                 maze[randRow][randCol] = startChar;
+                //the section below is not part of the algorithm, but is used to increase the chance of the maze being solvable
+                if(randRow+1<maxR-1 && maze[randRow+1][randCol] != exitChar && randCol!=0 && randCol!=maxC-1){
+                    maze[randRow+1][randCol] = openChar;
+                }
+                if(randRow-1>=1 && maze[randRow-1][randCol] != exitChar && randCol!=0 && randCol!=maxC-1){
+                    maze[randRow-1][randCol] = openChar;
+                }
+                if(randCol+1<maxC-1 && maze[randRow][randCol+1] != exitChar && randRow!=0 && randRow!=maxR-1){
+                    maze[randRow][randCol+1] = openChar;
+                }
+                if(randCol-1>=1 && maze[randRow][randCol-1] != exitChar && randRow!=0 && randRow!=maxR-1){
+                    maze[randRow][randCol-1] = openChar;
+                }
                 break;
             }
         }while(true); //do while loop that will only break when it finds a valid starting position
@@ -207,7 +220,7 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
         //nested for loop to randomly generate the middle section of the maze(excluding the borders and starting position)
         for(int i=1; i<maxR-1; i++){
             for(int j=1; j<maxC-1; j++){
-                if(maze[i][j] == startChar){ //to make sure the code won't overwrite the starting position
+                if(maze[i][j] == startChar || maze[i][j] ==openChar){ //if it's the starting position or an open space, skip it
                     continue;
                 }
                 if(maze[i][j+1] == exitChar || maze[i][j-1] == exitChar || maze[i+1][j] == exitChar || maze[i-1][j] == exitChar){ //not part of algorithm
