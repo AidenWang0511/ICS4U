@@ -324,7 +324,7 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
         //nested for loop to randomly generate the middle section of the maze(excluding the borders and starting position)
         for(int i=1; i<maxR-1; i++){
             for(int j=1; j<maxC-1; j++){
-                if(maze[i][j] == startChar || maze[i][j] ==openChar){ //if it's the starting position or an open space, skip it
+                if(maze[i][j] == startChar || maze[i][j] == openChar){ //if it's the starting position or an open space, skip it
                     continue;
                 }
                 if(maze[i][j+1] == exitChar || maze[i][j-1] == exitChar || maze[i+1][j] == exitChar || maze[i-1][j] == exitChar){ //not part of algorithm
@@ -332,14 +332,14 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
                     continue;
                 }
                 randNum = rand.nextInt(100);
-                if(maxC >=15 && maxR >=15){
-                    if(randNum < 50){ //50% chance of being a open path
+                if(maxC >=16 && maxR >=16){
+                    if(randNum <= 55){ //55% chance of being a open path
                         maze[i][j] = openChar;
                     }else{
                         maze[i][j] = barrierChar;
                     }
                 }else{
-                    if(randNum < 60){ //60% chance of being a open path
+                    if(randNum <= 65){ //65% chance of being a open path
                         maze[i][j] = openChar;
                     }else{
                         maze[i][j] = barrierChar;
