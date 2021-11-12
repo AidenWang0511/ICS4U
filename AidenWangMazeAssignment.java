@@ -15,7 +15,7 @@ import java.util.concurrent.Flow;
 public class AidenWangMazeAssignment extends JFrame implements ActionListener{
 
     public static char[][] maze = new char[20][20];
-    public static boolean[][] visited = new boolean[20][20];
+    public static boolean[][] vis = new boolean[20][20];
     public static boolean[][] check = new boolean[20][20];
     public static int maxR = 20;
     public static int maxC = 20;
@@ -23,6 +23,8 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
     public static char startChar = 'S';
     public static char exitChar = 'X';
     public static char openChar = 'O';
+    public static int startR = 0;
+    public static int startC = 0;
 
     public static JPanel uiPan = new JPanel();
     public static JLabel uiLabel = new JLabel("<html>Welcome to my a Maze ing game! Please Select an option to generate maze:<br/> <br/>Maximize screen for better user experience</html>");
@@ -48,6 +50,7 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
     public static JPanel mazeUIPanel = new JPanel();
     public static JButton btnSolve = new JButton("Solve Maze");
     public static JButton btnHome = new JButton("Return Home");
+    public static JLabel mazeLab = new JLabel("Pick an option:");
 
     public void actionPerformed(ActionEvent event){
         String command = event.getActionCommand();
@@ -77,6 +80,20 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
             }
         }else if(command.equals("Return Home")){
             returnHome();
+        }else if(command.equals("Solve Maze")){
+            boolean isSolved = solveMaze(startR, startC);
+            if(isSolved){
+                mazeLab.setText("Maze Solved!");
+                for(int i=0; i<maxR; i++){
+                    for(int j=0; j<maxC; j++){
+                        if(check[i][j] && maze[i][j] != startChar){
+                            mazeLabel[i][j].setBackground(Color.BLUE);
+                        }
+                    }
+                }
+            }else{
+                mazeLab.setText("Maze Unsolvable!");
+            }
         }
     }
     
@@ -128,9 +145,12 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
         fileGen.add(fileInput);
         fileGen.add(btnFileGenerate);
 
-        mazeUIPanel.setLayout(new GridLayout(1,2));
+        mazeUIPanel.setLayout(new GridLayout(0,3));
         btnHome.setFont(new Font("Comic Sans", Font.BOLD, 20));
         btnSolve.setFont(new Font("Comic Sans", Font.BOLD, 20));
+        mazeLab.setFont(new Font("Comic Sans", Font.BOLD, 20));
+        mazeLab.setHorizontalAlignment(SwingConstants.CENTER);
+        mazeUIPanel.add(mazeLab);
         mazeUIPanel.add(btnHome);
         mazeUIPanel.add(btnSolve);
 
@@ -269,7 +289,9 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
                 continue;
             }else{ //if it's not a corner, set the starting position to startChar
                 maze[randRow][randCol] = startChar;
-                //the section below is not part of the algorithm, but is used to increase the chance of the maze being solvable
+                startR = randRow;
+                startC = randCol;
+                //the section below is not part of the algorithm, but it is added to increase the chance of the maze being solvable
                 if(randRow+1<maxR-1 && maze[randRow+1][randCol] != exitChar && randCol!=0 && randCol!=maxC-1){
                     maze[randRow+1][randCol] = openChar;
                 }
@@ -346,7 +368,7 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
     }
 
     /**
-     * Regenerate the maze
+     * return back to the home panel
      * method name: returnHome
      * @return void - procedure method
      */
@@ -358,6 +380,8 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
             for(int j = 0; j < maxC; j++){
                 mazePanel.remove(mazeLabel[i][j]);
                 maze[i][j] = ' ';
+                vis[i][j] = false;
+                check[i][j] = false;
             }
         }
     }
@@ -402,6 +426,10 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
             String line = in.nextLine();
             for(int j = 0; j < maxC; j++){
                 maze[i][j] = line.charAt(j);
+                if(maze[i][j] == startChar){
+                    startR = i;
+                    startC = j;
+                }
             }
         }
         in.close();
@@ -433,8 +461,69 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
 
     }
 
+    /**
+     * recursive algorithm that solves the maze
+     * method name: solveMaze
+     * @param curR - current row of the maze that this method is on
+     * @param curC - current column of the maze that this method is on
+     * @return boolean - returns if the position curR, curC can lead to exit or not
+     */
+    public static boolean solveMaze(int curR, int curC){
+        if(maze[curR][curC] == exitChar){
+            return true;
+        }
+
+        if(maze[curR][curC] == barrierChar){
+            return false;
+        }
+
+        boolean checkExit = false;
+        if(!vis[curR][curC]){
+            vis[curR][curC] = true;
+        }else{
+            if(curR+1 < maxR){
+                checkExit = checkExit || check[curR+1][curC];
+            }
+            if(curR-1 >= 0){
+                checkExit = checkExit || check[curR-1][curC];
+            }
+            if(curC+1 < maxC){
+                checkExit = checkExit || check[curR][curC+1];
+            }
+            if(curC-1 >= 0){
+                checkExit = checkExit || check[curR][curC-1];
+            }
+            check[curR][curC] = checkExit;
+            return checkExit;
+        }
+        
+
+        if(curR-1 >= 0){
+            checkExit = checkExit || solveMaze(curR-1, curC);
+        }
+        if(curR+1 < maxR){
+            checkExit = checkExit || solveMaze(curR+1, curC);
+        }
+        if(curC-1 >= 0){
+            checkExit = checkExit || solveMaze(curR, curC-1);
+        }
+        if(curC+1 < maxC){
+            checkExit = checkExit || solveMaze(curR, curC+1);
+        }
+        check[curR][curC] = checkExit;
+        
+        return checkExit;
+    }
+
+
     public static void main(String[] args) {
         AidenWangMazeAssignment frame = new AidenWangMazeAssignment();
+        for(int i=0; i<maxR; i++){
+            for(int j=0; j<maxC; j++){
+                System.out.print(vis[i][j] + "\t");
+            }
+            System.out.println();
+        }
     }
 
 }
