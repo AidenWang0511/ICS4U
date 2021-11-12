@@ -394,6 +394,10 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
      * @return void - procedure method
      */
     public static void returnHome(){
+        startChar = 'S';
+        exitChar = 'X';
+        openChar = 'O';
+        barrierChar = 'B';
         mazePanel.setVisible(false);
         mazeUIPanel.setVisible(false);
         mazeLab.setText("Pick an option:");
