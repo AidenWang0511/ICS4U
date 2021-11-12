@@ -90,6 +90,7 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
                     for(int j=0; j<maxC; j++){
                         if(check[i][j] && maze[i][j] != startChar){
                             mazeLabel[i][j].setBackground(new Color(173,216,230));
+                            mazeLabel[i][j].setText("+");
                         }
                     }
                 }
