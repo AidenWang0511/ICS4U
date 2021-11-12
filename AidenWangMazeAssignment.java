@@ -84,15 +84,19 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
             boolean isSolved = solveMaze(startR, startC);
             if(isSolved){
                 mazeLab.setText("Maze Solved!");
+                mazeLab.setOpaque(true);
+                mazeLab.setBackground(Color.GREEN);
                 for(int i=0; i<maxR; i++){
                     for(int j=0; j<maxC; j++){
                         if(check[i][j] && maze[i][j] != startChar){
-                            mazeLabel[i][j].setBackground(Color.BLUE);
+                            mazeLabel[i][j].setBackground(new Color(173,216,230));
                         }
                     }
                 }
             }else{
                 mazeLab.setText("Maze Unsolvable!");
+                mazeLab.setOpaque(true);
+                mazeLab.setBackground(Color.RED);
             }
         }
     }
@@ -224,9 +228,13 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
             if(randNum == 0){
                 maze[1][0] = startChar;
                 maze[1][1] = exitChar;
+                startR = 1;
+                startC = 0;
             }else{
                 maze[1][0] = exitChar;
                 maze[1][1] = startChar;
+                startR = 1;
+                startC = 1;
             }
             return;
         }else if(maxR==2 && maxC==3){
@@ -234,9 +242,13 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
             if(randNum == 0){
                 maze[0][1] = startChar;
                 maze[1][1] = exitChar;
+                startR = 0;
+                startC = 1;
             }else{
                 maze[0][1] = exitChar;
                 maze[1][1] = startChar;
+                startR = 1;
+                startC = 1;
             }
             return;
         }
@@ -319,10 +331,18 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
                     continue;
                 }
                 randNum = rand.nextInt(100);
-                if(randNum <= 60){ //60% chance of being a open path
-                    maze[i][j] = openChar;
+                if(maxC >=15 && maxR >=15){
+                    if(randNum < 50){ //50% chance of being a open path
+                        maze[i][j] = openChar;
+                    }else{
+                        maze[i][j] = barrierChar;
+                    }
                 }else{
-                    maze[i][j] = barrierChar;
+                    if(randNum < 60){ //60% chance of being a open path
+                        maze[i][j] = openChar;
+                    }else{
+                        maze[i][j] = barrierChar;
+                    }
                 }
             }
         }
@@ -375,6 +395,8 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
     public static void returnHome(){
         mazePanel.setVisible(false);
         mazeUIPanel.setVisible(false);
+        mazeLab.setText("Pick an option:");
+        mazeLab.setBackground(Color.WHITE);
         uiPan.setVisible(true);
         for(int i = 0; i < maxR; i++){
             for(int j = 0; j < maxC; j++){
@@ -469,7 +491,11 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
      * @return boolean - returns if the position curR, curC can lead to exit or not
      */
     public static boolean solveMaze(int curR, int curC){
-        if(maze[curR][curC] == exitChar){
+        if(curR < 0 || curR >= maxR || curC < 0 || curC >= maxC){
+            return false;
+        }
+
+        if(maze[curR][curC] == exitChar || check[curR][curC]){
             return true;
         }
 
@@ -477,53 +503,45 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
             return false;
         }
 
-        boolean checkExit = false;
-        if(!vis[curR][curC]){
-            vis[curR][curC] = true;
+        if(vis[curR][curC]){
+            return false;
         }else{
-            if(curR+1 < maxR){
-                checkExit = checkExit || check[curR+1][curC];
-            }
-            if(curR-1 >= 0){
-                checkExit = checkExit || check[curR-1][curC];
-            }
-            if(curC+1 < maxC){
-                checkExit = checkExit || check[curR][curC+1];
-            }
-            if(curC-1 >= 0){
-                checkExit = checkExit || check[curR][curC-1];
-            }
-            check[curR][curC] = checkExit;
-            return checkExit;
+            vis[curR][curC] = true;
         }
-        
 
-        if(curR-1 >= 0){
-            checkExit = checkExit || solveMaze(curR-1, curC);
+        boolean top = solveMaze(curR - 1, curC);
+        boolean bottom = solveMaze(curR + 1, curC);
+        boolean left = solveMaze(curR, curC - 1);
+        boolean right = solveMaze(curR, curC + 1);
+
+        if(top){
+            check[curR][curC] = true;
+            vis[curR][curC] = false;
+            return true;
         }
-        if(curR+1 < maxR){
-            checkExit = checkExit || solveMaze(curR+1, curC);
+        if(right){
+            check[curR][curC] = true;
+            vis[curR][curC] = false;
+            return true;
         }
-        if(curC-1 >= 0){
-            checkExit = checkExit || solveMaze(curR, curC-1);
+        if(left){
+            check[curR][curC] = true;
+            vis[curR][curC] = false;
+            return true;
         }
-        if(curC+1 < maxC){
-            checkExit = checkExit || solveMaze(curR, curC+1);
+        if(bottom){
+            check[curR][curC] = true;
+            vis[curR][curC] = false;
+            return true;
         }
-        check[curR][curC] = checkExit;
+        vis[curR][curC] = false;
+        return false;
         
-        return checkExit;
     }
 
 
     public static void main(String[] args) {
         AidenWangMazeAssignment frame = new AidenWangMazeAssignment();
-        for(int i=0; i<maxR; i++){
-            for(int j=0; j<maxC; j++){
-                System.out.print(vis[i][j] + "\t");
-            }
-            System.out.println();
-        }
     }
 
 }
