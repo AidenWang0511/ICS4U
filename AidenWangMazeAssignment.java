@@ -333,11 +333,18 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
                 }
                 randNum = rand.nextInt(100);
                 if(maxC >=16 && maxR >=16){
-                    if(randNum <= 55){ //55% chance of being a open path
+                    if(randNum <= 50){ //50% chance of being a open path
                         maze[i][j] = openChar;
                     }else{
                         maze[i][j] = barrierChar;
                     }
+                }else if(maxC >= 10 && maxR >= 10){
+                    if(randNum <= 55){ //45% chance of being a open path
+                        maze[i][j] = openChar;
+                    }else{
+                        maze[i][j] = barrierChar;
+                    }
+
                 }else{
                     if(randNum <= 65){ //65% chance of being a open path
                         maze[i][j] = openChar;
@@ -519,27 +526,24 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
         boolean left = solveMaze(curR, curC - 1);
         boolean right = solveMaze(curR, curC + 1);
 
+        vis[curR][curC] = false;
         if(top){
             check[curR][curC] = true;
-            vis[curR][curC] = false;
             return true;
         }
         if(right){
             check[curR][curC] = true;
-            vis[curR][curC] = false;
             return true;
         }
         if(left){
             check[curR][curC] = true;
-            vis[curR][curC] = false;
             return true;
         }
         if(bottom){
             check[curR][curC] = true;
-            vis[curR][curC] = false;
             return true;
         }
-        vis[curR][curC] = false;
+        
         return false;
         
     }
