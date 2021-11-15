@@ -81,7 +81,6 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
         }else if(command.equals("Return Home")){
             returnHome();
         }else if(command.equals("Solve Maze")){
-            markDeadEnd();
             boolean isSolved = solveMaze(startR, startC);
             if(isSolved){
                 mazeLab.setText("Maze Solved!");
@@ -333,31 +332,27 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
                     continue;
                 }
                 randNum = rand.nextInt(100);
-                if(randNum <= 60){ //60% chance of being a open path
-                    maze[i][j] = openChar;
-                }else{
-                    maze[i][j] = barrierChar;
-                }
-                // if(maxC >=16 && maxR >=16){
-                //     if(randNum <= 50){ //50% chance of being a open path
-                //         maze[i][j] = openChar;
-                //     }else{
-                //         maze[i][j] = barrierChar;
-                //     }
-                // }else if(maxC >= 10 && maxR >= 10){
-                //     if(randNum <= 55){ //55% chance of being a open path
-                //         maze[i][j] = openChar;
-                //     }else{
-                //         maze[i][j] = barrierChar;
-                //     }
+                
+                if(maxC >= 19 || maxR >= 19){ //50% chance of being open
+                    if(randNum <= 45){ //40% chance of being a open path
+                        maze[i][j] = openChar;
+                    }else{
+                        maze[i][j] = barrierChar;
+                    }
+                }else if(maxC >= 10 && maxR >= 10){
+                    if(randNum <= 55){ //55% chance of being a open path
+                        maze[i][j] = openChar;
+                    }else{
+                        maze[i][j] = barrierChar;
+                    }
 
-                // }else{
-                //     if(randNum <= 65){ //65% chance of being a open path
-                //         maze[i][j] = openChar;
-                //     }else{
-                //         maze[i][j] = barrierChar;
-                //     }
-                // }
+                }else{
+                    if(randNum <= 65){ //65% chance of being a open path
+                        maze[i][j] = openChar;
+                    }else{
+                        maze[i][j] = barrierChar;
+                    }
+                }
             }
         }
 
@@ -554,47 +549,6 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
         
     }
 
-    /**
-     * mark all dead end as barrier
-     * method name: markDeadEnd
-     * @param curR - current row of the maze that this method is on
-     * @param curC - current column of the maze that this method is on
-     * @return boolean - procedure method
-     */
-    public static boolean markDeadEnd(int curR, int curC){
-        if(vis[curR][curC]){
-            return deadEnd[curR][curC];
-        }else{
-            vis[curR][curC] = true;
-        }
-        if(maze[curR][curC] == barrierChar){
-            return true;
-        }
-        int deadEndCount = 0;
-        boolean top = markDeadEnd(curR - 1, curC);
-        boolean bottom = markDeadEnd(curR + 1, curC);
-        boolean left = markDeadEnd(curR, curC - 1);
-        boolean right = markDeadEnd(curR, curC + 1);
-        if(top){
-            deadEndCount++;
-        }
-        if(right){
-            deadEndCount++;
-        }
-        if(left){
-            deadEndCount++;
-        }
-        if(bottom){
-            deadEndCount++;
-        }
-        if(deadEndCount == 3){
-            maze[curR][curC] = barrierChar;
-            deadEnd[curR][curC] = true;
-            return true;
-        }
-
-
-    }
     public static void main(String[] args) {
         AidenWangMazeAssignment frame = new AidenWangMazeAssignment();
     }
