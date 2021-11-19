@@ -340,7 +340,7 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
                         maze[i][j] = barrierChar;
                     }
                 }else if(maxC >= 10 && maxR >= 10){
-                    if(randNum <= 55){ //55% chance of being a open path
+                    if(randNum <= 50){ //50% chance of being a open path
                         maze[i][j] = openChar;
                     }else{
                         maze[i][j] = barrierChar;
