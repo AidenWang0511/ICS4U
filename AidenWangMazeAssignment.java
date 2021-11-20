@@ -334,7 +334,7 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
                 randNum = rand.nextInt(100);
                 
                 if(maxC >= 19 || maxR >= 19){ //50% chance of being open
-                    if(randNum <= 45){ //40% chance of being a open path
+                    if(randNum <= 45){ //45% chance of being a open path
                         maze[i][j] = openChar;
                     }else{
                         maze[i][j] = barrierChar;
