@@ -572,6 +572,8 @@ public class AidenWangMazeAssignment extends JFrame implements ActionListener{
     }
 
     public static void main(String[] args) {
+        //create a new instance of the GUI to start the maze
+        //should been done in a separate java file but for the sake of simplicity to run the program, it is done here
         AidenWangMazeAssignment frame = new AidenWangMazeAssignment();
     }
 
