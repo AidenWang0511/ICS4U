@@ -1,49 +1,36 @@
 import java.util.*;
-
 public class QuickSort {
-    public static void main(String[] args) {
-        
-        //bogo sort
-        int[] arr1 = {1,2,3,4,5,7,6,8};
-        bogoSort(arr1);
-    }
-    //bogo sort
-    public static void bogoSort(int[] arr) {
-        int n = arr.length;
-        while (!isSorted(arr)) {
-            shuffle(arr);
-            print(arr);
+    public static void main(String[] args){
+
+        int arr[] = {1,4,2,3,5,6,23,7,1};
+        //sort arr with quick sort
+        quickSort(arr,0,arr.length-1);
+        //print sorted array
+        for(int i=0;i<arr.length;i++){
+            System.out.print(arr[i]+" ");
         }
     }
-    //print arr
-    public static void print(int[] arr) {
-        for (int i = 0; i < arr.length; i++) {
-            System.out.print(arr[i] + " ");
-        }
-        System.out.println();
-    }
-    //shuffle
-    public static void shuffle(int[] arr) {
-        Random rand = new Random();
-        for (int i = 0; i < arr.length; i++) {
-            int r = i + rand.nextInt(arr.length - i);
-            swap(arr, i, r);
+    public static void quickSort(int arr[],int low,int high){
+        if(low<high){
+            int pi = partition(arr,low,high);
+            quickSort(arr,low,pi-1);
+            quickSort(arr,pi+1,high);
         }
     }
-    //isSorted
-    public static boolean isSorted(int[] arr) {
-        for (int i = 0; i < arr.length - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                return false;
+    public static int partition(int arr[],int low,int high){
+        int pivot = arr[high];
+        int i = low-1;
+        for(int j=low;j<high;j++){
+            if(arr[j]<=pivot){
+                i++;
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
             }
         }
-        return true;
-    }
-    //swap
-    public static void swap(int[] arr, int i, int j) {
-        int temp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = temp;
+        int temp = arr[i+1];
+        arr[i+1] = arr[high];
+        arr[high] = temp;
+        return i+1;
     }
 }
-
