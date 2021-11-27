@@ -2,35 +2,38 @@ import java.util.*;
 public class QuickSort {
     public static void main(String[] args){
 
-        int arr[] = {1,4,2,3,5,6,23,7,1};
-        //sort arr with quick sort
-        quickSort(arr,0,arr.length-1);
-        //print sorted array
-        for(int i=0;i<arr.length;i++){
-            System.out.print(arr[i]+" ");
+        //sort string array using quick sort in alphabetical order
+        String[] strArray = {"pqr", "stu", "vwx", "abc","def", "ghi", "jkl", "mno", "yz"};    
+        quickSort(strArray, 0, strArray.length-1);
+        System.out.println("Sorted String Array: ");
+        for(String s: strArray){
+            System.out.print(s + " ");
         }
     }
-    public static void quickSort(int arr[],int low,int high){
-        if(low<high){
-            int pi = partition(arr,low,high);
-            quickSort(arr,low,pi-1);
-            quickSort(arr,pi+1,high);
+    //quick sort method
+    public static void quickSort(String[] strArray, int low, int high){
+        if(low < high){
+            int pivot = partition(strArray, low, high);
+            quickSort(strArray, low, pivot-1);
+            quickSort(strArray, pivot+1, high);
         }
     }
-    public static int partition(int arr[],int low,int high){
-        int pivot = arr[high];
+    //partition method
+    public static int partition(String[] strArray, int low, int high){
+        String pivot = strArray[high];
         int i = low-1;
-        for(int j=low;j<high;j++){
-            if(arr[j]<=pivot){
+        for(int j = low; j < high; j++){
+            if(strArray[j].compareTo(pivot) > 0){
                 i++;
-                int temp = arr[i];
-                arr[i] = arr[j];
-                arr[j] = temp;
+                String temp = strArray[i];
+                strArray[i] = strArray[j];
+                strArray[j] = temp;
             }
         }
-        int temp = arr[i+1];
-        arr[i+1] = arr[high];
-        arr[high] = temp;
+        String temp = strArray[i+1];
+        strArray[i+1] = strArray[high];
+        strArray[high] = temp;
         return i+1;
     }
+   
 }
