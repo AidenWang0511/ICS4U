@@ -36,7 +36,7 @@ public class SequentialSearch {
      */
     public static int recursiveBinarySearch(int[] arr, int value, int left, int right) {
         //if left > right
-            //return -1
+            return -1;
         //set mid to the average of left and right (mid = (left+right) / 2))
         //if arr[mid] == value
             //return the mid index
