@@ -1,7 +1,7 @@
 /*
 File Name: InsertionSortActivity
 Author: Aiden Wang
-Date: Dec, 2021
+Date: Dec 17, 2021
 Description: Acticity for insertion sort presentation
  */
 
