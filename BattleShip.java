@@ -1,4 +1,3 @@
-package battleShipProject;
 /*
  * Authors: Ali, Aiden, James, David, Daniel
  * Date: Jan. 17
@@ -517,17 +516,77 @@ public class BattleShip {
 			}
 			else{
 				if(AIDifficulty == 0){//0 indicates easy, 1 indicates expert
-//					easyAITargeting() 
-//					TODO implement this, algorithm is already there so it should be easy
+					easyAITargeting();
 				}
 				else{
-//					expertAITargeting() 
-//					TODO implement this, algorithm is already there so it should be easy
+					expertAITargeting();
 				}
 			}
 		}
 	}
 	
+	/**
+	 * code for the easy AI targeting algorithm
+	 * name: easyAITargeting
+	 * @param none
+	 * @return void - procedure method
+	 */
+	static void easyAITargeting() {
+		int randomRow = -1, randomCol = -1;
+		Pair tragetCoord = new Pair(randomRow, randomCol);
+		do{
+			randomRow = (int)(Math.random()*10);
+			randomCol = (int)(Math.random()*10);
+			tragetCoord.row = randomRow;
+			tragetCoord.col = randomCol;
+		}while(!validTargets(tragetCoord));
+		computer.fire(computer, human, tragetCoord);
+	}
+
+	/**
+	 * code for the expert AI targeting algorithm
+	 * name: expertAITargeting
+	 * @param none
+	 * @return void - procedure method
+	 */
+	static void expertAITargeting() {
+		int targetRow = -1, targetCol = -1;
+		Pair tragetCoord = new Pair(targetRow, targetCol);
+		if(nextTargets.isEmpty()){
+			do{
+				targetRow = (int)(Math.random()*10);
+				targetCol = (int)(Math.random()*10);
+				tragetCoord.row = targetRow;
+				tragetCoord.col = targetCol;
+			}while(!validTargets(tragetCoord));
+		}else{
+			int i=0;
+			for(Pair coord: nextTargets){
+				if(i == nextTargets.size()){
+					tragetCoord.col = coord.col;
+					tragetCoord.row = coord.row;
+				}
+				i++;
+			}
+			nextTargets.remove(tragetCoord);
+		}
+
+		if(computer.fire(computer, human, tragetCoord)){
+			if(validTargets(new Pair(targetRow+1, targetCol))){
+				nextTargets.add(new Pair(targetRow+1, targetCol));
+			}
+			if(validTargets(new Pair(targetRow-1, targetCol))){
+				nextTargets.add(new Pair(targetRow-1, targetCol));
+			}
+			if(validTargets(new Pair(targetRow, targetCol+1))){
+				nextTargets.add(new Pair(targetRow, targetCol+1));
+			}
+			if(validTargets(new Pair(targetRow, targetCol-1))){
+				nextTargets.add(new Pair(targetRow, targetCol-1));
+			}
+		}
+	}
+
 	public static void main(String[] args) {
 		
 	}

@@ -13,7 +13,7 @@ public class SequentialSearch {
     public static void sequentialSearch(String[] arr, String key) {
         boolean flag = false;
         for (int i = 0; i < arr.length; i++) {
-            if (array[i].equals(key)) {
+            if (arr[i].equals(key)) {
                 System.out.println("Found " + key + " at index " + i);
                 flag = true;
             }
