@@ -1,4 +1,3 @@
-package battleShipProject;
 /*
  * Authors: Ali, Aiden, James, David, Daniel
  * Date: Jan. 17
@@ -14,7 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 
-public class BattleShip {
+public class BattleShip2 {
 	static Pair head = new Pair(-1,-1);
 	static Pair tail = new Pair(-1,-1);
 	static boolean winnerDeclared;
