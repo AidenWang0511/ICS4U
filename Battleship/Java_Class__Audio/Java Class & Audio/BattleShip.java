@@ -1,4 +1,3 @@
-package battleShipProject;
 /*
  * Authors: Ali, Aiden, James, David, Daniel
  * Date: Jan. 17
@@ -52,7 +51,7 @@ public class BattleShip {
 		public Player(String playerName) {// player class constructor
 			this.playerName = playerName;
 			destroyer = new Ship(2);
-			submarine = new Ship(2);
+			submarine = new Ship(3);
 			cruiser = new Ship(3);
 			battleship = new Ship(4);
 			carrier = new Ship(5);
@@ -111,8 +110,8 @@ public class BattleShip {
 				head.col = rand.nextInt(10);
 
 				int randOrientation = rand.nextInt(4);
-				pickRandomTail(randOrientation, 2);
-				if (validPlacement(computer, 's',2)) {
+				pickRandomTail(randOrientation, 3);
+				if (validPlacement(computer, 's',3)) {
 					submarinePlaced = true;
 				}
 			} while (submarinePlaced == false);
@@ -341,7 +340,7 @@ public class BattleShip {
 			}
 		}
 	}
-
+	
 	public static class Ship {
 		int shipSize;
 		int partsHit;
@@ -519,7 +518,7 @@ public class BattleShip {
 	
 	static void checkForShipPlacement(String action) {
 		switch(action) {
-		case("Place Destroyer"):
+		case("Place Destroyer (1x2)"):
 			if (!destroyerPlaced) {
 				if(!headPicked || !tailPicked) {
 					return;
@@ -533,12 +532,12 @@ public class BattleShip {
 				}
 			}
 			break;
-		case("Place Submarine"):
+		case("Place Submarine (1x3)"):
 			if (!submarinePlaced) {
 				if(!headPicked || !tailPicked) {
 					return;
 				}
-				if (validPlacement(human, 's', 2)) {
+				if (validPlacement(human, 's', 3)) {
 					submarinePlaced = true;
 					status.setText("You have placed a Submarine");
 					placeShips[1].setVisible(false);
@@ -547,7 +546,7 @@ public class BattleShip {
 				}
 			}
 			break;
-		case("Place Cruiser"):
+		case("Place Cruiser (1x3)"):
 			if (!cruiserPlaced) {
 				if(!headPicked || !tailPicked) {
 					return;
@@ -561,7 +560,7 @@ public class BattleShip {
 				}
 			}
 			break;
-		case("Place Battleship"):
+		case("Place Battleship (1x4)"):
 			if (!battleshipPlaced) {
 				if(!headPicked || !tailPicked) {
 					return;
@@ -575,7 +574,7 @@ public class BattleShip {
 				}
 			}
 			break;
-		case("Place Carrier"):
+		case("Place Carrier (1x5)"):
 			if (!carrierPlaced) {
 				if(!headPicked || !tailPicked) {
 					return;
@@ -629,18 +628,18 @@ public class BattleShip {
 		rightPanel.setLayout(new GridLayout(10,10));
 
 		midPanel = new JPanel();
-		midPanel.setLayout(new BoxLayout(midPanel, BoxLayout.Y_AXIS));
+		midPanel.setLayout(new GridLayout(20,0));
 		midPanel.add(timer);
 		
 		leftPanel = new JPanel();
 		leftPanel.setLayout(new GridLayout(10,10));
 		
 		placeShips = new JButton[5];
-		placeShips[0] = new JButton("Place Destroyer");
-		placeShips[1] = new JButton("Place Submarine");
-		placeShips[2] = new JButton("Place Cruiser");
-		placeShips[3] = new JButton("Place Battleship");
-		placeShips[4] = new JButton("Place Carrier");
+		placeShips[0] = new JButton("Place Destroyer (1x2)");
+		placeShips[1] = new JButton("Place Submarine (1x3)");
+		placeShips[2] = new JButton("Place Cruiser (1x3)");
+		placeShips[3] = new JButton("Place Battleship (1x4)");
+		placeShips[4] = new JButton("Place Carrier (1x5)");
 		for(int i=0;i<placeShips.length;i++) {
 			placeShips[i].addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
