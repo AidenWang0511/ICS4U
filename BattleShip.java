@@ -33,6 +33,7 @@ public class BattleShip {
 	static int timerMinutes = 0;
 	static String curShipPlace = "NULL";//to track what ship is currently being placed
 	static HashSet<Pair> nextTargets = new HashSet<Pair>();//used by the AI to check for optimal targets
+	static volatile boolean isReset = true;//to determine if the game is reset
 	static Player human, computer;//player objects for both the human player and computer
 	
 	public static class Player{
@@ -144,7 +145,7 @@ public class BattleShip {
 				PrintWriter output = new PrintWriter(printTo);//initialize the printwriter to the file object
 				for (int r = 0; r < 10; r++) {//use a nested for loop to go through the 10x10 2d char array and write the chars to the file
 					for (int c = 0; c < 10; c++) {
-						output.print(playerGrid[r][c]);
+						output.print(playerGrid[r][c] + " ");
 					}
 					output.println();//newline to format
 				}
@@ -665,6 +666,7 @@ public class BattleShip {
 	static JLabel computerMisses = new JLabel("Computer's Misses: ");
 	static JLabel timer = new JLabel("0:00");
 	static JLabel status = new JLabel("");
+	static JButton reset = new JButton("Reset");
 	
 	/**
 	 * method to initialize the GUI and add all the components to the JFrame
@@ -677,7 +679,7 @@ public class BattleShip {
 		mainFrame = new JFrame();
 		mainFrame.setLayout(new BorderLayout());//mainframe has borderlayout
 		mainFrame.setTitle("Battleship");//Title
-		mainFrame.setSize(1920,600);//window size	
+		mainFrame.setSize(1400,600);//window size	
 		mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);//program will terminate when the frame is closed
 
 		rightPanel = new JPanel();//panel on the right side, responsible for the enemy grid
@@ -806,12 +808,58 @@ public class BattleShip {
 				});
 			}
 		}
+		reset.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				resetGame();
+				reset.setVisible(false);
+			}
+		});
+		reset.setVisible(false);
+		midPanel.add(reset);
 		
 		//add all the panels to the mainFrame
 		mainFrame.add(leftPanel, BorderLayout.LINE_START);
 		mainFrame.add(midPanel,BorderLayout.CENTER);
 		mainFrame.add(rightPanel, BorderLayout.LINE_END);
 		mainFrame.setVisible(true);
+	}
+	
+	/**
+	 * method to reset the game after a winner is declared
+	 * name: resetGame()
+	 * @param none
+	 * @return void - procedure method
+	 */
+	static void resetGame() {
+		//TODO add the reset button
+		isReset = true;
+		reset.setVisible(false);
+		human = new Player("Player");
+		computer = new Player("Computer");
+		difficultyPicked = false;
+		allPlaced = false;
+		destroyerPlaced = false;
+		submarinePlaced = false;
+		cruiserPlaced = false;
+		battleshipPlaced = false;
+		carrierPlaced = false;
+		winnerDeclared = false;
+		for(int i=0;i<rightGrid.length;i++) {
+			for(int j=0;j<rightGrid[0].length;j++) {
+				playerButton[i][j].setBackground(new JButton().getBackground());
+				rightGrid[i][j].setBackground(new JButton().getBackground());
+			}
+		}
+		human.shotsTaken = 0;
+		human.misses = 0;
+		human.hits = 0;
+		computer.shotsTaken = 0;
+		computer.misses = 0;
+		computer.hits = 0;
+		timerSeconds = 0;
+		timerMinutes = 0;
+		easyDiff.setVisible(true);
+		expertDiff.setVisible(true);
 	}
 	
 	/**
@@ -837,7 +885,7 @@ public class BattleShip {
 		time.scheduleAtFixedRate(new TimerTask() {//schedule a timer task every second
 			@Override
 			public void run() {
-				if (!winnerDeclared) {//if the winner hasn't been declared, the timer will keep incrementing
+				if (!winnerDeclared && !isReset) {//if the winner hasn't been declared and the game isnt in reset state, the timer will keep incrementing
 					timerSeconds++;//increment seconds
 					if (timerSeconds == 60) {//if it has reached 60 second count
 						timerSeconds = 0;//set it back to 0
@@ -846,15 +894,14 @@ public class BattleShip {
 					//format timerSeconds and timerMinutes into a string
 					String timerString = Integer.toString(timerMinutes) + ":" + Integer.toString(timerSeconds / 10) + Integer.toString(timerSeconds % 10);
 					timer.setText(timerString);//set the timer JLabel to the timerString 
-
-					//update the JLabel for tracking shots/misses/hits every second
-					playerShots.setText(human.playerName + "'s Shots: " + human.shotsTaken);
-					playerHits.setText(human.playerName + "'s Hits: " + human.hits);
-					playerMisses.setText(human.playerName + "'s Misses: " + human.misses);
-					computerShots.setText(computer.playerName + "'s Shots: " + computer.shotsTaken);
-					computerHits.setText(computer.playerName + "'s Hits: " + computer.hits);
-					computerMisses.setText(computer.playerName + "'s Misses: " + computer.misses);
 				}
+				//update the JLabel for tracking shots/misses/hits every second
+				playerShots.setText(human.playerName + "'s Shots: " + human.shotsTaken);
+				playerHits.setText(human.playerName + "'s Hits: " + human.hits);
+				playerMisses.setText(human.playerName + "'s Misses: " + human.misses);
+				computerShots.setText(computer.playerName + "'s Shots: " + computer.shotsTaken);
+				computerHits.setText(computer.playerName + "'s Hits: " + computer.hits);
+				computerMisses.setText(computer.playerName + "'s Misses: " + computer.misses);
 			}
 		}, 0, 1000);
 	}
@@ -988,48 +1035,58 @@ public class BattleShip {
 	static void startGame() {
 		human = new Player("Player");//initialize the human and computer Players
 		computer = new Player("Computer");
-		computer.randomlyPlace();//call the method to randomly place ships for the AI
-		initializeGUI();//call the gui to initialize and add all the components to the mainFrame
+		initializeGUI();//call the gui to initialize and add all the components to the mainFrame			
 		startBGM();//start the BGM
-
-		while(!allPlaced||!difficultyPicked) {//wait for the player to pick the difficulty and place their ships
-			try {
-				Thread.sleep(200);
-			} 	
-			catch (InterruptedException e) {
-			}
-		}
-		if(coinToss()){//if the cointoss returns true
-			playerTurn = true;//the player will get the first turn
-			status.setText("You won the cointoss, the first turn is yours");
-		}
-		else {//otherwise, the computer goes first
-			status.setText("You lost the cointoss, the enemy goes first");
-		}
-		
 		startTimer();//start the timer
 		
-		while(!winnerDeclared){//while there isn't a winner yet, the while loop will keep the game logic running
-			try {
-				Thread.sleep(1000);//add a delay between each turn
-			} catch (InterruptedException e1) {
+		while(true) {
+			computer.randomlyPlace();//call the method to randomly place ships for the AI
+			while(!allPlaced||!difficultyPicked) {//wait for the player to pick the difficulty and place their ships
+				try {
+					Thread.sleep(200);
+				} 	
+				catch (InterruptedException e) {
+				}
 			}
-			if(playerTurn){//if it's the player's turn
-				targeting = true;//let the player target
-				while(targeting) {//infinitely loop while the player is allowed to target (wait for the player to pick a target)
-					try {
-						Thread.sleep(200);
-					}	 	
-					catch (InterruptedException e) {//the sleep will be interrupted when 'targeting' changes as it is volatile
+			if(coinToss()){//if the cointoss returns true
+				playerTurn = true;//the player will get the first turn
+				status.setText("You won the cointoss, the first turn is yours");
+			}
+			else {//otherwise, the computer goes first
+				status.setText("You lost the cointoss, the enemy goes first");
+				playerTurn = false;//computer goes first
+			}
+			isReset = false;//the game is no longer in reset state if it was reset
+			
+			while(!winnerDeclared){//while there isn't a winner yet, the while loop will keep the game logic running
+				try {
+					Thread.sleep(1000);//add a delay between each turn
+				} catch (InterruptedException e1) {
+				}
+				if(playerTurn){//if it's the player's turn
+					targeting = true;//let the player target
+					while(targeting) {//infinitely loop while the player is allowed to target (wait for the player to pick a target)
+						try {
+							Thread.sleep(200);
+						}	 	
+						catch (InterruptedException e) {//the sleep will be interrupted when 'targeting' changes as it is volatile
+						}
+					}
+				}
+				else{//otherwise, let the computer target the human player
+					if(AIDifficulty == 0){//0 indicates easy, 1 indicates expert
+						easyAITargeting();
+					}
+					else{
+						expertAITargeting();
 					}
 				}
 			}
-			else{//otherwise, let the computer target the human player
-				if(AIDifficulty == 0){//0 indicates easy, 1 indicates expert
-					easyAITargeting();
-				}
-				else{
-					expertAITargeting();
+			reset.setVisible(true);
+			while(!isReset){
+				try {
+					Thread.sleep(200);//add a delay between each turn
+				} catch (InterruptedException e1) {
 				}
 			}
 		}
