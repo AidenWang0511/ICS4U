@@ -36,6 +36,8 @@ public class BattleShip {
 	static Pair lastHit = new Pair(-1,-1);//used by the AI to check for optimal targets
 	static int directionCounter = -1;//used by the AI to check for optimal targets
 	static int rowCounter = 0, colCounter = 0;
+	static int targetRow = -1, targetCol = -1;
+	static Pair targetCoord = new Pair(targetRow, targetCol);
 	static volatile boolean isReset = true;//to determine if the game is reset
 	static Player human, computer;//player objects for both the human player and computer
 	
@@ -326,8 +328,6 @@ public class BattleShip {
 	 * @return void - procedure method
 	 */
 	static void expertAITargeting() {
-		int targetRow = -1, targetCol = -1;
-		Pair targetCoord = new Pair(targetRow, targetCol);
 		if (nextTargets.isEmpty()) {//if there's no optimal targets
 			do {
 				// targetRow = (int) (Math.random() * 10);
@@ -347,31 +347,6 @@ public class BattleShip {
 				targetCoord.col = targetCol;
 			} while (!validTargets(targetCoord));//same as easy AI for picking random targets
 
-		} 
-		else {//otherwise, focus on the optimal targets
-			int i = 0;//initalize a counter to help remove the last element of the hashset
-			for (Pair coord : nextTargets) {//go through the pairs in the hashset
-				i++;
-				//if (i == nextTargets.size()) {//if this is the last element in the hashset
-					targetCoord.col = coord.col;//set the target coordinates to the pair
-					targetCoord.row = coord.row;
-				//}
-				if(i==1){
-					break;
-				}
-			}
-			//print out the nextTarget hashset
-			System.out.println("nextTargets: ");
-			for (Pair coord : nextTargets) {
-				System.out.print("("+coord.row+","+coord.col+"), ");
-			}
-			System.out.println();
-			nextTargets.remove(targetCoord);//remove it from the hashset
-		}
-
-
-
-		if (nextTargets.isEmpty()) {//fire at the target, if it returned true, check for adjacent tiles 
 			if(computer.fire(computer, human, targetCoord) && directionCounter == -1){
 				lastHit = targetCoord;
 				if (validTargets(new Pair(targetCoord.row + 1, targetCoord.col))) {//if the adjacent tile is a valid target
@@ -387,16 +362,59 @@ public class BattleShip {
 					nextTargets.add(new Pair(targetCoord.row, targetCoord.col - 1));
 				}
 				directionCounter = 0;
-			}
+			}	
 		}else if(directionCounter == 0){
-			if()
-			direcitonCounter = 0;
-
-		}else{
-			
-		}
-		if(direcitonCounter == 4){
-			direcitonCounter = -1;
+			if (validTargets(new Pair(lastHit.row + 1, lastHit.col))) {//if the adjacent tile is a valid target
+				if(computer.fire(computer, human, new Pair(lastHit.row + 1, lastHit.col))){
+					lastHit = new Pair(lastHit.row + 1, lastHit.col);
+				}else{
+					directionCounter = 1;
+					lastHit = targetCoord;
+				}
+			}else{
+				directionCounter = 1;
+				lastHit = targetCoord;
+				expertAITargeting();
+			}
+		}else if(directionCounter == 1){
+			if (validTargets(new Pair(lastHit.row - 1, lastHit.col))) {//if the adjacent tile is a valid target
+				if(computer.fire(computer, human, new Pair(lastHit.row - 1, lastHit.col))){
+					lastHit = new Pair(lastHit.row - 1, lastHit.col);
+				}else{
+					directionCounter = 2;
+					lastHit = targetCoord;
+				}
+			}else{
+				directionCounter = 2;
+				lastHit = targetCoord;
+				expertAITargeting();
+			}
+		}else if(directionCounter == 2){
+			if (validTargets(new Pair(lastHit.row, lastHit.col + 1))) {//if the adjacent tile is a valid target
+				if(computer.fire(computer, human, new Pair(lastHit.row, lastHit.col + 1))){
+					lastHit = new Pair(lastHit.row, lastHit.col + 1);
+				}else{
+					lastHit = targetCoord;
+					directionCounter = 3;
+				}
+			}else{
+				directionCounter = 3;
+				lastHit = targetCoord;
+				expertAITargeting();
+			}
+		}else if(directionCounter == 3){
+			if (validTargets(new Pair(lastHit.row, lastHit.col - 1))) {//if the adjacent tile is a valid target
+				if(computer.fire(computer, human, new Pair(lastHit.row, lastHit.col - 1))){
+					lastHit = new Pair(lastHit.row, lastHit.col - 1);
+				}else{
+					directionCounter = -1;
+					nextTargets = new HashSet<Pair>();
+				}
+			}else{
+				directionCounter = -1;
+				nextTargets = new HashSet<Pair>();
+				expertAITargeting();
+			}
 		}
 	}
 
