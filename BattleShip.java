@@ -32,7 +32,7 @@ public class BattleShip {
 	static int timerSeconds = 0;//timer variables
 	static int timerMinutes = 0;
 	static String curShipPlace = "NULL";//to track what ship is currently being placed
-	static HashSet<Pair> nextTargets = new HashSet<Pair>();//used by the AI to check for optimal targets
+	static boolean expertAITargetFlag = true;//used by the AI to check for optimal targets
 	static Pair lastHit = new Pair(-1,-1);//used by the AI to check for optimal targets
 	static int directionCounter = -1;//used by the AI to check for optimal targets
 	static int rowCounter = 0, colCounter = 0;
@@ -328,7 +328,7 @@ public class BattleShip {
 	 * @return void - procedure method
 	 */
 	static void expertAITargeting() {
-		if (nextTargets.isEmpty()) {//if there's no optimal targets
+		if (expertAITargetFlag) {//if there's no optimal targets
 			do {
 				// targetRow = (int) (Math.random() * 10);
 				// targetCol = (int) (Math.random() * 10);
@@ -349,18 +349,7 @@ public class BattleShip {
 
 			if(computer.fire(computer, human, targetCoord) && directionCounter == -1){
 				lastHit = targetCoord;
-				if (validTargets(new Pair(targetCoord.row + 1, targetCoord.col))) {//if the adjacent tile is a valid target
-					nextTargets.add(new Pair(targetCoord.row + 1, targetCoord.col));//add it to the hashset
-				}
-				if (validTargets(new Pair(targetCoord.row - 1, targetCoord.col))) {
-					nextTargets.add(new Pair(targetCoord.row - 1, targetCoord.col));
-				}
-				if (validTargets(new Pair(targetCoord.row, targetCoord.col + 1))) {
-					nextTargets.add(new Pair(targetCoord.row, targetCoord.col + 1));
-				}
-				if (validTargets(new Pair(targetCoord.row, targetCoord.col - 1))) {
-					nextTargets.add(new Pair(targetCoord.row, targetCoord.col - 1));
-				}
+				expertAITargetFlag = false;
 				directionCounter = 0;
 			}	
 		}else if(directionCounter == 0){
@@ -377,9 +366,9 @@ public class BattleShip {
 				expertAITargeting();
 			}
 		}else if(directionCounter == 1){
-			if (validTargets(new Pair(lastHit.row - 1, lastHit.col))) {//if the adjacent tile is a valid target
-				if(computer.fire(computer, human, new Pair(lastHit.row - 1, lastHit.col))){
-					lastHit = new Pair(lastHit.row - 1, lastHit.col);
+			if (validTargets(new Pair(lastHit.row, lastHit.col + 1))) {//if the adjacent tile is a valid target
+				if(computer.fire(computer, human, new Pair(lastHit.row, lastHit.col + 1))){
+					lastHit = new Pair(lastHit.row, lastHit.col + 1);
 				}else{
 					directionCounter = 2;
 					lastHit = targetCoord;
@@ -390,9 +379,9 @@ public class BattleShip {
 				expertAITargeting();
 			}
 		}else if(directionCounter == 2){
-			if (validTargets(new Pair(lastHit.row, lastHit.col + 1))) {//if the adjacent tile is a valid target
-				if(computer.fire(computer, human, new Pair(lastHit.row, lastHit.col + 1))){
-					lastHit = new Pair(lastHit.row, lastHit.col + 1);
+			if (validTargets(new Pair(lastHit.row - 1, lastHit.col))) {//if the adjacent tile is a valid target
+				if(computer.fire(computer, human, new Pair(lastHit.row - 1, lastHit.col))){
+					lastHit = new Pair(lastHit.row - 1, lastHit.col);
 				}else{
 					lastHit = targetCoord;
 					directionCounter = 3;
@@ -408,11 +397,11 @@ public class BattleShip {
 					lastHit = new Pair(lastHit.row, lastHit.col - 1);
 				}else{
 					directionCounter = -1;
-					nextTargets = new HashSet<Pair>();
+					expertAITargetFlag = true;
 				}
 			}else{
 				directionCounter = -1;
-				nextTargets = new HashSet<Pair>();
+				expertAITargetFlag = true;
 				expertAITargeting();
 			}
 		}
@@ -901,6 +890,11 @@ public class BattleShip {
 		battleshipPlaced = false;
 		carrierPlaced = false;
 		winnerDeclared = false;
+		expertAITargetFlag = true;
+		lastHit = new Pair(-1,-1);
+		targetCoord = new Pair(-1,-1);
+		targetCol = -1;
+		targetRow = -1;
 		for(int i=0;i<rightGrid.length;i++) {
 			for(int j=0;j<rightGrid[0].length;j++) {
 				playerButton[i][j].setBackground(new JButton().getBackground());
