@@ -1,1 +1,1 @@
-reset
+Pair coord : nextTargets

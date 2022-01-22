@@ -33,6 +33,9 @@ public class BattleShip {
 	static int timerMinutes = 0;
 	static String curShipPlace = "NULL";//to track what ship is currently being placed
 	static HashSet<Pair> nextTargets = new HashSet<Pair>();//used by the AI to check for optimal targets
+	static Pair lastHit = new Pair(-1,-1);//used by the AI to check for optimal targets
+	static int directionCounter = -1;//used by the AI to check for optimal targets
+	static int rowCounter = 0, colCounter = 0;
 	static volatile boolean isReset = true;//to determine if the game is reset
 	static Player human, computer;//player objects for both the human player and computer
 	
@@ -327,37 +330,73 @@ public class BattleShip {
 		Pair targetCoord = new Pair(targetRow, targetCol);
 		if (nextTargets.isEmpty()) {//if there's no optimal targets
 			do {
-				targetRow = (int) (Math.random() * 10);
-				targetCol = (int) (Math.random() * 10);
+				// targetRow = (int) (Math.random() * 10);
+				// targetCol = (int) (Math.random() * 10);
+				targetRow = rowCounter;
+				targetCol = colCounter;
+				rowCounter+=2;
+				if (rowCounter >= 10) {
+					if(colCounter % 2 == 0) {
+						rowCounter = 1;
+					}else {
+						rowCounter = 0;
+					}
+					colCounter++;
+				}
 				targetCoord.row = targetRow;
 				targetCoord.col = targetCol;
 			} while (!validTargets(targetCoord));//same as easy AI for picking random targets
+
 		} 
 		else {//otherwise, focus on the optimal targets
 			int i = 0;//initalize a counter to help remove the last element of the hashset
 			for (Pair coord : nextTargets) {//go through the pairs in the hashset
 				i++;
-				if (i == nextTargets.size()) {//if this is the last element in the hashset
+				//if (i == nextTargets.size()) {//if this is the last element in the hashset
 					targetCoord.col = coord.col;//set the target coordinates to the pair
 					targetCoord.row = coord.row;
+				//}
+				if(i==1){
+					break;
 				}
 			}
+			//print out the nextTarget hashset
+			System.out.println("nextTargets: ");
+			for (Pair coord : nextTargets) {
+				System.out.print("("+coord.row+","+coord.col+"), ");
+			}
+			System.out.println();
 			nextTargets.remove(targetCoord);//remove it from the hashset
 		}
-		
-		if (computer.fire(computer, human, targetCoord)) {//fire at the target, if it returned true, check for adjacent tiles 
-			if (validTargets(new Pair(targetCoord.row + 1, targetCoord.col))) {//if the adjacent tile is a valid target
-				nextTargets.add(new Pair(targetCoord.row + 1, targetCoord.col));//add it to the hashset
+
+
+
+		if (nextTargets.isEmpty()) {//fire at the target, if it returned true, check for adjacent tiles 
+			if(computer.fire(computer, human, targetCoord) && directionCounter == -1){
+				lastHit = targetCoord;
+				if (validTargets(new Pair(targetCoord.row + 1, targetCoord.col))) {//if the adjacent tile is a valid target
+					nextTargets.add(new Pair(targetCoord.row + 1, targetCoord.col));//add it to the hashset
+				}
+				if (validTargets(new Pair(targetCoord.row - 1, targetCoord.col))) {
+					nextTargets.add(new Pair(targetCoord.row - 1, targetCoord.col));
+				}
+				if (validTargets(new Pair(targetCoord.row, targetCoord.col + 1))) {
+					nextTargets.add(new Pair(targetCoord.row, targetCoord.col + 1));
+				}
+				if (validTargets(new Pair(targetCoord.row, targetCoord.col - 1))) {
+					nextTargets.add(new Pair(targetCoord.row, targetCoord.col - 1));
+				}
+				directionCounter = 0;
 			}
-			if (validTargets(new Pair(targetCoord.row - 1, targetCoord.col))) {
-				nextTargets.add(new Pair(targetCoord.row - 1, targetCoord.col));
-			}
-			if (validTargets(new Pair(targetCoord.row, targetCoord.col + 1))) {
-				nextTargets.add(new Pair(targetCoord.row, targetCoord.col + 1));
-			}
-			if (validTargets(new Pair(targetCoord.row, targetCoord.col - 1))) {
-				nextTargets.add(new Pair(targetCoord.row, targetCoord.col - 1));
-			}
+		}else if(directionCounter == 0){
+			if()
+			direcitonCounter = 0;
+
+		}else{
+			
+		}
+		if(direcitonCounter == 4){
+			direcitonCounter = -1;
 		}
 	}
 
@@ -858,6 +897,8 @@ public class BattleShip {
 		computer.hits = 0;
 		timerSeconds = 0;
 		timerMinutes = 0;
+		rowCounter = 0;
+		colCounter = 0;
 		easyDiff.setVisible(true);
 		expertDiff.setVisible(true);
 	}
