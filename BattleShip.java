@@ -35,9 +35,9 @@ public class BattleShip {
 	static boolean expertAITargetFlag = true;//used by the AI to check for optimal targets
 	static Pair lastHit = new Pair(-1,-1);//used by the AI to check for optimal targets
 	static int directionCounter = -1;//used by the AI to check for optimal targets
-	static int rowCounter = 0, colCounter = 0;
-	static int targetRow = -1, targetCol = -1;
-	static Pair targetCoord = new Pair(targetRow, targetCol);
+	static int rowCounter = 0, colCounter = 0;//used by the AI to check for optimal targets
+	static int targetRow = -1, targetCol = -1;//used by the AI to check for optimal targets
+	static Pair targetCoord = new Pair(targetRow, targetCol);//used by the AI to check for optimal targets
 	static volatile boolean isReset = true;//to determine if the game is reset
 	static Player human, computer;//player objects for both the human player and computer
 	
@@ -328,14 +328,12 @@ public class BattleShip {
 	 * @return void - procedure method
 	 */
 	static void expertAITargeting() {
-		if (expertAITargetFlag) {//if there's no optimal targets
+		if (expertAITargetFlag) {//if there's no optimal targets, the AI will fire in a checkerboard pattern
 			do {
-				// targetRow = (int) (Math.random() * 10);
-				// targetCol = (int) (Math.random() * 10);
 				targetRow = rowCounter;
 				targetCol = colCounter;
-				rowCounter+=2;
-				if (rowCounter >= 10) {
+				rowCounter+=2; //used to accomplish the checkerboard pattern
+				if (rowCounter >= 10) { //switches to the next column
 					if(colCounter % 2 == 0) {
 						rowCounter = 1;
 					}else {
@@ -345,61 +343,62 @@ public class BattleShip {
 				}
 				targetCoord.row = targetRow;
 				targetCoord.col = targetCol;
-			} while (!validTargets(targetCoord));//same as easy AI for picking random targets
+			} while (!validTargets(targetCoord));//do-while loop breaks when a valid target is generated
 
+			//if the target generated get hit, the AI will start to fire in all 4 directions until it misses
 			if(computer.fire(computer, human, targetCoord) && directionCounter == -1){
 				lastHit = targetCoord;
-				expertAITargetFlag = false;
-				directionCounter = 0;
+				expertAITargetFlag = false;//expertAITargetFlag is false when the AI has found a optimized target
+				directionCounter = 0;//set the direction to down because it's the most likely one to hit
 			}	
 		}else if(directionCounter == 0){
-			if (validTargets(new Pair(lastHit.row + 1, lastHit.col))) {//if the adjacent tile is a valid target
-				if(computer.fire(computer, human, new Pair(lastHit.row + 1, lastHit.col))){
-					lastHit = new Pair(lastHit.row + 1, lastHit.col);
-				}else{
+			if (validTargets(new Pair(lastHit.row + 1, lastHit.col))) {//if the adjecent down target is valid
+				if(computer.fire(computer, human, new Pair(lastHit.row + 1, lastHit.col))){//if the AI hits the target, it will continue to fire in the current direction
+					lastHit = new Pair(lastHit.row + 1, lastHit.col);//update last hit for next target
+				}else{//if AI misses, it will fire in another direction next turn
 					directionCounter = 1;
 					lastHit = targetCoord;
 				}
-			}else{
+			}else{//if not valid, swtich to a different direction
 				directionCounter = 1;
 				lastHit = targetCoord;
 				expertAITargeting();
 			}
-		}else if(directionCounter == 1){
-			if (validTargets(new Pair(lastHit.row, lastHit.col + 1))) {//if the adjacent tile is a valid target
-				if(computer.fire(computer, human, new Pair(lastHit.row, lastHit.col + 1))){
-					lastHit = new Pair(lastHit.row, lastHit.col + 1);
-				}else{
+		}else if(directionCounter == 1){//same as above but for the right direction
+			if (validTargets(new Pair(lastHit.row, lastHit.col + 1))) {//if the adjecent right target is valid
+				if(computer.fire(computer, human, new Pair(lastHit.row, lastHit.col + 1))){ //if the AI hits the target, it will continue to fire in the current direction
+					lastHit = new Pair(lastHit.row, lastHit.col + 1); //update last hit for next target
+				}else{//if AI misses, it will fire in another direction next turn
 					directionCounter = 2;
 					lastHit = targetCoord;
 				}
-			}else{
+			}else{//if not valid, swtich to a different direction
 				directionCounter = 2;
 				lastHit = targetCoord;
 				expertAITargeting();
 			}
-		}else if(directionCounter == 2){
+		}else if(directionCounter == 2){//same as above but for the up direction
 			if (validTargets(new Pair(lastHit.row - 1, lastHit.col))) {//if the adjacent tile is a valid target
-				if(computer.fire(computer, human, new Pair(lastHit.row - 1, lastHit.col))){
-					lastHit = new Pair(lastHit.row - 1, lastHit.col);
-				}else{
+				if(computer.fire(computer, human, new Pair(lastHit.row - 1, lastHit.col))){ //if the AI hits the target, it will continue to fire in the current direction
+					lastHit = new Pair(lastHit.row - 1, lastHit.col); //update last hit for next target
+				}else{//if AI misses, it will fire in another direction next turn
 					lastHit = targetCoord;
 					directionCounter = 3;
 				}
-			}else{
+			}else{//if not valid, swtich to a different direction
 				directionCounter = 3;
 				lastHit = targetCoord;
 				expertAITargeting();
 			}
-		}else if(directionCounter == 3){
+		}else if(directionCounter == 3){//same as above but for the left direction
 			if (validTargets(new Pair(lastHit.row, lastHit.col - 1))) {//if the adjacent tile is a valid target
-				if(computer.fire(computer, human, new Pair(lastHit.row, lastHit.col - 1))){
-					lastHit = new Pair(lastHit.row, lastHit.col - 1);
-				}else{
+				if(computer.fire(computer, human, new Pair(lastHit.row, lastHit.col - 1))){ //if the AI hits the target, it will continue to fire in the current direction
+					lastHit = new Pair(lastHit.row, lastHit.col - 1); //update last hit for next target
+				}else{ //if AI misses, it will fire in another direction next turn
 					directionCounter = -1;
 					expertAITargetFlag = true;
 				}
-			}else{
+			}else{//if not valid, swtich to a different direction
 				directionCounter = -1;
 				expertAITargetFlag = true;
 				expertAITargeting();
