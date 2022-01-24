@@ -1,6 +1,6 @@
 /*
  * Authors: Ali, Aiden, James, David, Daniel
- * Date: Jan. 17
+ * Date: Jan. 24, 2022
  * The program to run the battleship board game
  */
 import java.util.*;
